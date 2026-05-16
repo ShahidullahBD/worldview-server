@@ -30,22 +30,35 @@ async function run() {
     const db = client.db('worldview');
     const destinationCollection = db.collection('destinations');
 
-    app.get('/destination', async (req, res)=>{
-        const result = await destinationCollection.find().toArray()
-        res.json(result);
+    app.get('/destination', async (req, res) => {
+      const result = await destinationCollection.find().toArray()
+      res.json(result);
     })
 
-    app.get('/destination/:id', async (req, res)=>{
-        const {id} = req.params;
-        const result = await destinationCollection.findOne({_id: new ObjectId(id)})
-        res.json(result);
+    app.get('/destination/:id', async (req, res) => {
+      const { id } = req.params;
+      const result = await destinationCollection.findOne({ _id: new ObjectId(id) })
+      res.json(result);
     })
 
-    app.post('/destination', async (req, res)=>{
-        const destinationData = req.body;
-        console.log(destinationData, 'destinationData');
-        const result =await destinationCollection.insertOne(destinationData);
-        res.json(result);
+    app.patch('/destination/:id', async (req, res) => {
+      const { id } = req.params;
+      const updateData = req.body;
+
+      console.log(updateData, 'updatedData');
+
+      const result = await destinationCollection.updateOne(
+        {_id: new ObjectId(id)},
+        {$set: updateData}
+      )
+      res.json(result)
+    })
+
+    app.post('/destination', async (req, res) => {
+      const destinationData = req.body;
+      console.log(destinationData, 'destinationData');
+      const result = await destinationCollection.insertOne(destinationData);
+      res.json(result);
     })
 
 
@@ -60,10 +73,10 @@ async function run() {
 }
 run().catch(console.dir);
 
-app.get('/', (req, res)=>{
-    res.send('Server is running fine!')
+app.get('/', (req, res) => {
+  res.send('Server is running fine!')
 })
 
-app.listen(PORT, ()=>{
-    console.log(`Server running on port: ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port: ${PORT}`);
 })
