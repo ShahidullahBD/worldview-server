@@ -48,10 +48,16 @@ async function run() {
       console.log(updateData, 'updatedData');
 
       const result = await destinationCollection.updateOne(
-        {_id: new ObjectId(id)},
-        {$set: updateData}
+        { _id: new ObjectId(id) },
+        { $set: updateData }
       )
       res.json(result)
+    })
+
+    app.delete('/destination/:id', async (req, res) => {
+      const { id } = req.params;
+      const result = await destinationCollection.deleteOne({_id: new ObjectId(id)})
+      res.json()
     })
 
     app.post('/destination', async (req, res) => {
